@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   parse_input.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/31 11:23:44 by cstoia            #+#    #+#             */
-/*   Updated: 2024/05/31 11:42:22 by cstoia           ###   ########.fr       */
+/*   Created: 2024/05/31 16:09:21 by cstoia            #+#    #+#             */
+/*   Updated: 2024/05/31 17:08:42 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	ft_atoi(const char *str)
+static int	ft_atoi(const char *str)
 {
 	int	i;
 	int	sign;
@@ -37,4 +37,39 @@ int	ft_atoi(const char *str)
 		i++;
 	}
 	return (result * sign);
+}
+
+static int	ft_isdigit(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if ((str[i] < '0' || str[i] > '9'))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+void	parse_input(t_data *data, char **argv)
+{
+	int	i;
+	int	num;
+
+	i = 1;
+	while (argv[i])
+	{
+		num = ft_atoi(argv[i]);
+		if (num < 0 || num > 2147483647 || (!ft_isdigit(argv[i])))
+			ft_error("Error: Invalid input");
+		i++;
+	}
+	data->num_of_philo = ft_atoi(argv[1]);
+	data->time_to_die = ft_atoi(argv[2]);
+	data->time_to_eat = ft_atoi(argv[3]);
+	data->time_to_sleep = ft_atoi(argv[4]);
+	if (argv[5])
+		data->limit_meals = ft_atoi(argv[5]);
 }

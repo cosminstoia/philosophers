@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 11:22:24 by cstoia            #+#    #+#             */
-/*   Updated: 2024/05/31 12:34:42 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/05/31 17:12:15 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,40 +15,19 @@
 int	ft_error(char *str)
 {
 	printf("%s\n", str);
-	return (EXIT_FAILURE);
+	exit (EXIT_FAILURE);
 }
 
-void	*routine(void *arg)
-{
-	(void)arg;
-	printf("Thread has been created\n");
-	return (NULL);
-}
 int	main(int argc, char **argv)
 {
-	int i;
-	int num_of_philo;
+	t_data	data;
 
-	if (argc == 2)
+	if (argc == 5 || argc == 6)
 	{
-		num_of_philo = ft_atoi(argv[1]);
-		pthread_t th[num_of_philo];
-
-		i = 0;
-		while (i < num_of_philo)
-		{
-			if (pthread_create(&th[i], NULL, &routine, NULL) != 0)
-				ft_error("Failed to create thread\n");
-			i++;
-		}
-		i = 0;
-		while (i < num_of_philo)
-		{
-			if (pthread_join(th[i], NULL) != 0)
-				ft_error("Failed to join thread\n");
-			i++;
-		}
-		printf("Threads are joined\n");
+		parse_input(&data, argv);
+		init_threads(&data);
 	}
+	else
+		ft_error("Wrong number of arguments!");
 	return (0);
 }
