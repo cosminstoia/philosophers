@@ -6,18 +6,28 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 14:40:28 by cstoia            #+#    #+#             */
-/*   Updated: 2024/05/31 17:11:41 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/03 10:27:21 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+// Function called for each thread
 static void	*routine(void *arg)
 {
-	int	philo_index;
+	t_philo	*philo;
 
-	philo_index = *((int *)arg);
-	printf("%d is eating\n", philo_index);
+	philo = (t_philo *)arg;
+	while (1)
+	{
+		printf("%d is thinking\n", philo->index);
+		usleep(1000);
+		printf("%d is eating\n", philo->index);
+		usleep(1000);
+		printf("%d is sleeping\n", philo->index);
+		usleep(1000);
+	}
+	free(philo);
 	return (NULL);
 }
 
@@ -26,13 +36,16 @@ void	init_threads(t_data *data)
 {
 	int			i;
 	pthread_t	th[data->num_of_philo];
-	int			index[data->num_of_philo];
 
 	i = 0;
+	data->philo = malloc(data->num_of_philo * sizeof(t_philo));
 	while (i < data->num_of_philo)
 	{
-		index[i] = i + 1;
-		if (pthread_create(&th[i], NULL, &routine, &index[i]) != 0)
+		if (!data->philo)
+			ft_error("Failed to allocate memory");
+		data->philo[i].index = i + 1;
+		data->philo[i].data = data;
+		if (pthread_create(&th[i], NULL, &routine, &data->philo[i]) != 0)
 			ft_error("Error: Failed to create thread");
 		i++;
 	}

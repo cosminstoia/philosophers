@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 11:22:24 by cstoia            #+#    #+#             */
-/*   Updated: 2024/05/31 17:12:15 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/03 09:03:05 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	ft_error(char *str)
 {
 	printf("%s\n", str);
-	exit (EXIT_FAILURE);
+	exit(EXIT_FAILURE);
 }
 
 int	main(int argc, char **argv)
