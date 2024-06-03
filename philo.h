@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 11:41:03 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/03 10:10:13 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/03 15:34:20 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <pthread.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <sys/time.h>
 # include <unistd.h>
 
 // ./philo 5 800 200 200 [5]
@@ -26,7 +27,6 @@ typedef struct s_philo
 {
 	int					index;
 	int					last_meal;
-	int					eat_counter;
 	int					left_fork;
 	int					right_fork;
 	t_data				*data;
@@ -40,8 +40,8 @@ typedef struct s_data
 	int					time_to_eat;
 	int					time_to_sleep;
 	int					limit_meals;
-	t_philo				*philo;
 	pthread_mutex_t		*forks;
+	t_philo				*philo;
 }						t_data;
 
 // Parse input function

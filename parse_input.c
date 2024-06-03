@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 16:09:21 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/03 09:02:50 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/03 15:21:52 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,6 @@ void	parse_input(t_data *data, char **argv)
 	data->time_to_sleep = ft_atoi(argv[4]);
 	if (argv[5])
 		data->limit_meals = ft_atoi(argv[5]);
+	else
+		data->limit_meals = -1;
 }
