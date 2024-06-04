@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 11:41:03 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/03 15:34:20 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/04 11:47:39 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,9 @@ typedef struct s_data
 	int					time_to_eat;
 	int					time_to_sleep;
 	int					limit_meals;
+	long long			start_time;
+	long long			last_meal_time;
+	long long			c_time;
 	pthread_mutex_t		*forks;
 	t_philo				*philo;
 }						t_data;
@@ -49,6 +52,11 @@ void					parse_input(t_data *data, char **argv);
 
 // Threads fucntions
 void					init_threads(t_data *data);
+long long				get_time_in_ms(void);
+void					*handel_one_philo(t_philo *philo);
+void					*check_if_dead(t_philo *philo);
+void					destroy_mutex(t_data *data);
+void					join_threads(t_data *data, pthread_t *th);
 
 // Error function
 int						ft_error(char *str);

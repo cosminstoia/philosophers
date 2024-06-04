@@ -15,7 +15,8 @@ INCLUDES = ./philo.h
 CFILES = 	\
 			./main.c \
 			./init_threads.c \
-			./parse_input.c
+			./parse_input.c \
+			./init_threads_utils.c \
 
 # Define objects
 OBJECTS = $(CFILES:%.c=$(OBJ_DIR)/%.o)
