@@ -6,11 +6,34 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 14:40:28 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/04 11:47:38 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/04 14:47:15 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+// More precise usleep function
+static int	ft_usleep(useconds_t microseconds)
+{
+	long			elapsed;
+	struct timeval	start;
+	struct timeval	end;
+
+	if (microseconds < 0)
+		return (-1);
+	if (gettimeofday(&start, NULL) != 0)
+		return (-1);
+	elapsed = 0;
+	while (elapsed < microseconds)
+	{
+		usleep(10);
+		if (gettimeofday(&end, NULL) != 0)
+			return (-1);
+		elapsed = (end.tv_sec - start.tv_sec) * 1000000L + (end.tv_usec
+				- start.tv_usec);
+	}
+	return (0);
+}
 
 // Function called for each thread
 static void	*routine(void *arg)
@@ -31,12 +54,12 @@ static void	*routine(void *arg)
 		printf("%lld %d has taken a fork\n", philo->data->c_time, philo->index);
 		printf("%lld %d has taken a fork\n", philo->data->c_time, philo->index);
 		printf("%lld %d is eating\n", philo->data->c_time, philo->index);
-		usleep(philo->data->time_to_eat);
+		ft_usleep(philo->data->time_to_eat);
 		pthread_mutex_unlock(&philo->data->forks[philo->left_fork]);
 		pthread_mutex_unlock(&philo->data->forks[philo->right_fork]);
 		printf("%lld %d is thinking\n", philo->data->c_time, philo->index);
 		printf("%lld %d is sleeping\n", philo->data->c_time, philo->index);
-		usleep(philo->data->time_to_sleep);
+		ft_usleep(philo->data->time_to_sleep);
 		i++;
 	}
 	return (NULL);
@@ -68,4 +91,5 @@ void	init_threads(t_data *data)
 	}
 	join_threads(data, th);
 	destroy_mutex(data);
+	free(th);
 }
