@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 14:40:28 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/05 16:10:06 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/05 20:05:14 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ static void	*routine(void *arg)
 	while (!philo->data->dead && (philo->data->meal == -1
 			|| i < philo->data->meal))
 	{
+		philo->data->c_time = get_time_in_ms() - philo->data->start_time;
 		if (handel_one_philo(philo) || check_if_dead(philo))
 			return (NULL);
 		if (pthread_mutex_lock(&philo->data->forks[philo->left_fork]) != 0)
@@ -55,14 +56,7 @@ static void	*routine(void *arg)
 			pthread_mutex_unlock(&philo->data->forks[philo->left_fork]);
 			return (NULL);
 		}
-		if (pthread_mutex_lock(&philo->data->last_meal_mutex[philo->index
-				- 1]) != 0)
-		{
-			pthread_mutex_unlock(&philo->data->forks[philo->left_fork]);
-			pthread_mutex_unlock(&philo->data->forks[philo->right_fork]);
-			return (NULL);
-		}
-		philo->data->c_time = get_time_in_ms() - philo->data->start_time;
+		pthread_mutex_lock(&philo->data->last_meal_mutex[philo->index - 1]);
 		printf("%lld %d has taken a fork\n", philo->data->c_time, philo->index);
 		printf("%lld %d has taken a fork\n", philo->data->c_time, philo->index);
 		printf("%lld %d is eating\n", philo->data->c_time, philo->index);
