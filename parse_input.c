@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 16:09:21 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/04 11:19:01 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/04 15:53:49 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,11 @@ void	parse_input(t_data *data, char **argv)
 		i++;
 	}
 	data->num_of_philo = ft_atoi(argv[1]);
-	data->time_to_die = ft_atoi(argv[2]) * 1000;
+	data->time_to_die = ft_atoi(argv[2]);
 	data->time_to_eat = ft_atoi(argv[3]) * 1000;
 	data->time_to_sleep = ft_atoi(argv[4]) * 1000;
 	if (argv[5])
-		data->limit_meals = ft_atoi(argv[5]);
+		data->meal = ft_atoi(argv[5]);
 	else
-		data->limit_meals = -1;
+		data->meal = -1;
 }

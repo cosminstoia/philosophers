@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 11:43:15 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/04 14:46:35 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/05 16:02:30 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ long long	get_time_in_ms(void)
 }
 
 // Function that handle the case where there is only one philosopher
-void	*handel_one_philo(t_philo *philo)
+int	handel_one_philo(t_philo *philo)
 {
 	if (philo->data->num_of_philo == 1)
 	{
@@ -30,19 +30,19 @@ void	*handel_one_philo(t_philo *philo)
 			philo->index);
 		usleep(philo->data->time_to_die);
 		printf("%lld %d died\n", philo->data->c_time, philo->index);
-		return (NULL);
+		return (1);
 	}
 	return (0);
 }
 
 // Fucntion to check if a philosopher is dead
-void	*check_if_dead(t_philo *philo)
+int	check_if_dead(t_philo *philo)
 {
-	if (get_time_in_ms()
-		- philo->data->last_meal_time > philo->data->time_to_die)
+	if (philo->data->c_time - philo->last_meal > philo->data->time_to_die)
 	{
+		philo->data->dead = 1;
 		printf("%lld %d died\n", philo->data->c_time, philo->index);
-		return (NULL);
+		return (1);
 	}
 	return (0);
 }

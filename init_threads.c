@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 14:40:28 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/04 14:47:15 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/05 16:10:06 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,20 +41,34 @@ static void	*routine(void *arg)
 	t_philo	*philo;
 	int		i;
 
-	i = 0;
 	philo = (t_philo *)arg;
-	philo->data->last_meal_time = get_time_in_ms();
-	while (philo->data->limit_meals == -1 || i < philo->data->limit_meals)
+	i = 0;
+	while (!philo->data->dead && (philo->data->meal == -1
+			|| i < philo->data->meal))
 	{
+		if (handel_one_philo(philo) || check_if_dead(philo))
+			return (NULL);
+		if (pthread_mutex_lock(&philo->data->forks[philo->left_fork]) != 0)
+			return (NULL);
+		if (pthread_mutex_lock(&philo->data->forks[philo->right_fork]) != 0)
+		{
+			pthread_mutex_unlock(&philo->data->forks[philo->left_fork]);
+			return (NULL);
+		}
+		if (pthread_mutex_lock(&philo->data->last_meal_mutex[philo->index
+				- 1]) != 0)
+		{
+			pthread_mutex_unlock(&philo->data->forks[philo->left_fork]);
+			pthread_mutex_unlock(&philo->data->forks[philo->right_fork]);
+			return (NULL);
+		}
 		philo->data->c_time = get_time_in_ms() - philo->data->start_time;
-		handel_one_philo(philo);
-		check_if_dead(philo);
-		pthread_mutex_lock(&philo->data->forks[philo->left_fork]);
-		pthread_mutex_lock(&philo->data->forks[philo->right_fork]);
 		printf("%lld %d has taken a fork\n", philo->data->c_time, philo->index);
 		printf("%lld %d has taken a fork\n", philo->data->c_time, philo->index);
 		printf("%lld %d is eating\n", philo->data->c_time, philo->index);
+		philo->last_meal = philo->data->c_time;
 		ft_usleep(philo->data->time_to_eat);
+		pthread_mutex_unlock(&philo->data->last_meal_mutex[philo->index - 1]);
 		pthread_mutex_unlock(&philo->data->forks[philo->left_fork]);
 		pthread_mutex_unlock(&philo->data->forks[philo->right_fork]);
 		printf("%lld %d is thinking\n", philo->data->c_time, philo->index);
@@ -74,13 +88,17 @@ void	init_threads(t_data *data)
 	th = malloc(data->num_of_philo * sizeof(pthread_t));
 	data->philo = malloc(data->num_of_philo * sizeof(t_philo));
 	data->forks = malloc(data->num_of_philo * sizeof(pthread_mutex_t));
+	data->last_meal_mutex = malloc(data->num_of_philo
+			* sizeof(pthread_mutex_t));
 	if (!data->forks || !data->philo || !th)
-		ft_error("Failed to allocate memory");
+		ft_error("Error: Failed to allocate memory");
 	data->start_time = get_time_in_ms();
 	i = 0;
 	while (i < data->num_of_philo)
 	{
+		pthread_mutex_init(&data->last_meal_mutex[i], NULL);
 		pthread_mutex_init(&data->forks[i], NULL);
+		data->philo[i].last_meal = 0;
 		data->philo[i].index = i + 1;
 		data->philo[i].left_fork = i;
 		data->philo[i].right_fork = (i + 1) % data->num_of_philo;
