@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 11:41:03 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/06 11:10:19 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/06 12:26:28 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,6 @@
 # include <stdlib.h>
 # include <sys/time.h>
 # include <unistd.h>
-
-// ./philo 5 800 200 200 [5]
-// ./philo 4 410 200 200
-// ./philo 200 800 200 200
 
 typedef struct s_data	t_data;
 

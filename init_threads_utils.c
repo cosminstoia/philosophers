@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 11:43:15 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/06 11:46:30 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/06 12:25:17 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void	destroy_mutex(t_data *data)
 	while (i < data->num_of_philo)
 	{
 		pthread_mutex_destroy(&data->forks[i]);
+		pthread_mutex_destroy(&data->last_meal_mutex[i]);
 		i++;
 	}
 }

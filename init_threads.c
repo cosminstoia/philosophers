@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 14:40:28 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/06 11:59:43 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/06 12:27:44 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,47 @@ static void	ft_usleep(useconds_t microseconds)
 	}
 }
 
+// Initialize variables
+static void	init_variables(t_data *data, int i)
+{
+	data->c_time = 0;
+	data->dead = 0;
+	data->philo[i].last_meal = 0;
+	data->philo[i].index = i + 1;
+	data->philo[i].left_fork = i;
+	data->philo[i].right_fork = (i + 1) % data->num_of_philo;
+	data->philo[i].data = data;
+}
+
+// Eating routine for each philo
+static int	eat(t_philo *philo)
+{
+	if (pthread_mutex_lock(&philo->data->forks[philo->left_fork]) != 0
+		|| handel_one_philo(philo))
+		return (0);
+	if (pthread_mutex_lock(&philo->data->forks[philo->right_fork]) != 0)
+	{
+		pthread_mutex_unlock(&philo->data->forks[philo->left_fork]);
+		return (0);
+	}
+	if (check_if_dead(philo))
+		return (0);
+	else
+	{
+		philo->data->c_time = get_time_in_ms() - philo->data->start_time;
+		pthread_mutex_lock(&philo->data->last_meal_mutex[philo->index - 1]);
+		printf("%lld %d has taken a fork\n", philo->data->c_time, philo->index);
+		printf("%lld %d has taken a fork\n", philo->data->c_time, philo->index);
+		printf("%lld %d is eating\n", philo->data->c_time, philo->index);
+		philo->last_meal = philo->data->c_time;
+		ft_usleep(philo->data->time_to_eat);
+		pthread_mutex_unlock(&philo->data->last_meal_mutex[philo->index - 1]);
+		pthread_mutex_unlock(&philo->data->forks[philo->left_fork]);
+		pthread_mutex_unlock(&philo->data->forks[philo->right_fork]);
+	}
+	return (1);
+}
+
 // Function called for each thread
 static void	*routine(void *arg)
 {
@@ -45,26 +86,8 @@ static void	*routine(void *arg)
 	while (!philo->data->dead && (philo->data->meal == -1
 			|| i < philo->data->meal))
 	{
-		if (pthread_mutex_lock(&philo->data->forks[philo->left_fork]) != 0
-			|| handel_one_philo(philo))
+		if (!eat(philo))
 			return (NULL);
-		if (pthread_mutex_lock(&philo->data->forks[philo->right_fork]) != 0)
-		{
-			pthread_mutex_unlock(&philo->data->forks[philo->left_fork]);
-			return (NULL);
-		}
-		if (check_if_dead(philo))
-			return (NULL);
-		philo->data->c_time = get_time_in_ms() - philo->data->start_time;
-		pthread_mutex_lock(&philo->data->last_meal_mutex[philo->index - 1]);
-		printf("%lld %d has taken a fork\n", philo->data->c_time, philo->index);
-		printf("%lld %d has taken a fork\n", philo->data->c_time, philo->index);
-		printf("%lld %d is eating\n", philo->data->c_time, philo->index);
-		philo->last_meal = philo->data->c_time;
-		ft_usleep(philo->data->time_to_eat);
-		pthread_mutex_unlock(&philo->data->last_meal_mutex[philo->index - 1]);
-		pthread_mutex_unlock(&philo->data->forks[philo->left_fork]);
-		pthread_mutex_unlock(&philo->data->forks[philo->right_fork]);
 		printf("%lld %d is thinking\n", philo->data->c_time, philo->index);
 		printf("%lld %d is sleeping\n", philo->data->c_time, philo->index);
 		ft_usleep(philo->data->time_to_sleep);
@@ -86,20 +109,13 @@ void	init_threads(t_data *data)
 			* sizeof(pthread_mutex_t));
 	if (!data->forks || !data->philo || !th)
 		ft_error("Error: Failed to allocate memory");
-	data->c_time = 0;
-	data->dead = 0;
 	data->start_time = get_time_in_ms();
 	i = 0;
 	while (i < data->num_of_philo)
 	{
 		pthread_mutex_init(&data->last_meal_mutex[i], NULL);
 		pthread_mutex_init(&data->forks[i], NULL);
-		data->philo[i].last_meal = 0;
-		data->philo[i].index = i + 1;
-		data->philo[i].left_fork = i;
-		data->philo[i].right_fork = (i + 1) % data->num_of_philo;
-		data->philo[i].data = data;
-		usleep(1000);
+		init_variables(data, i);
 		if (pthread_create(&th[i], NULL, &routine, &data->philo[i]) != 0)
 			ft_error("Error: Failed to create thread");
 		i++;
