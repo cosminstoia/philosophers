@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 11:41:03 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/05 20:05:17 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/06 11:10:19 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 // ./philo 5 800 200 200 [5]
 // ./philo 4 410 200 200
 // ./philo 200 800 200 200
+
 typedef struct s_data	t_data;
 
 // Store the data for each philosopher
@@ -45,9 +46,9 @@ typedef struct s_data
 	long long			start_time;
 	long long			c_time;
 	int					dead;
+	t_philo				*philo;
 	pthread_mutex_t		*forks;
 	pthread_mutex_t		*last_meal_mutex;
-	t_philo				*philo;
 }						t_data;
 
 // Parse input function

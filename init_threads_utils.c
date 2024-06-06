@@ -6,19 +6,19 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 11:43:15 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/05 20:05:15 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/06 11:46:30 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-// Function to get the time of the day
+// Gets the current time in milliseconds
 long long	get_time_in_ms(void)
 {
-	struct timeval	tv;
+	struct timeval	time;
 
-	gettimeofday(&tv, NULL);
-	return (tv.tv_sec * 1000LL + tv.tv_usec / 1000LL);
+	gettimeofday(&time, NULL);
+	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
 // Function that handle the case where there is only one philosopher
@@ -38,7 +38,7 @@ int	handel_one_philo(t_philo *philo)
 // Fucntion to check if a philosopher is dead
 int	check_if_dead(t_philo *philo)
 {
-	if (philo->data->c_time - philo->last_meal > philo->data->time_to_die)
+	if ((philo->data->c_time) - (philo->last_meal) > (philo->data->time_to_die))
 	{
 		philo->data->dead = 1;
 		printf("%lld %d died\n", philo->data->c_time, philo->index);

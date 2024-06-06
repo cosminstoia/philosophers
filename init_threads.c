@@ -6,33 +6,32 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 14:40:28 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/05 20:05:14 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/06 11:59:43 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 // More precise usleep function
-static int	ft_usleep(useconds_t microseconds)
+static void	ft_usleep(useconds_t microseconds)
 {
-	long			elapsed;
+	struct timeval	end_time;
 	struct timeval	start;
-	struct timeval	end;
 
-	if (microseconds < 0)
-		return (-1);
-	if (gettimeofday(&start, NULL) != 0)
-		return (-1);
-	elapsed = 0;
-	while (elapsed < microseconds)
+	gettimeofday(&start, NULL);
+	end_time.tv_sec = start.tv_sec + microseconds / 1000000;
+	end_time.tv_usec = start.tv_usec + microseconds % 1000000;
+	if (end_time.tv_usec >= 1000000)
 	{
-		usleep(10);
-		if (gettimeofday(&end, NULL) != 0)
-			return (-1);
-		elapsed = (end.tv_sec - start.tv_sec) * 1000000L + (end.tv_usec
-				- start.tv_usec);
+		end_time.tv_sec += 1;
+		end_time.tv_usec -= 1000000;
 	}
-	return (0);
+	while ((start.tv_sec < end_time.tv_sec) || (start.tv_sec == end_time.tv_sec
+			&& start.tv_usec < end_time.tv_usec))
+	{
+		usleep(1000);
+		gettimeofday(&start, NULL);
+	}
 }
 
 // Function called for each thread
@@ -46,16 +45,17 @@ static void	*routine(void *arg)
 	while (!philo->data->dead && (philo->data->meal == -1
 			|| i < philo->data->meal))
 	{
-		philo->data->c_time = get_time_in_ms() - philo->data->start_time;
-		if (handel_one_philo(philo) || check_if_dead(philo))
-			return (NULL);
-		if (pthread_mutex_lock(&philo->data->forks[philo->left_fork]) != 0)
+		if (pthread_mutex_lock(&philo->data->forks[philo->left_fork]) != 0
+			|| handel_one_philo(philo))
 			return (NULL);
 		if (pthread_mutex_lock(&philo->data->forks[philo->right_fork]) != 0)
 		{
 			pthread_mutex_unlock(&philo->data->forks[philo->left_fork]);
 			return (NULL);
 		}
+		if (check_if_dead(philo))
+			return (NULL);
+		philo->data->c_time = get_time_in_ms() - philo->data->start_time;
 		pthread_mutex_lock(&philo->data->last_meal_mutex[philo->index - 1]);
 		printf("%lld %d has taken a fork\n", philo->data->c_time, philo->index);
 		printf("%lld %d has taken a fork\n", philo->data->c_time, philo->index);
@@ -86,6 +86,8 @@ void	init_threads(t_data *data)
 			* sizeof(pthread_mutex_t));
 	if (!data->forks || !data->philo || !th)
 		ft_error("Error: Failed to allocate memory");
+	data->c_time = 0;
+	data->dead = 0;
 	data->start_time = get_time_in_ms();
 	i = 0;
 	while (i < data->num_of_philo)
@@ -97,6 +99,7 @@ void	init_threads(t_data *data)
 		data->philo[i].left_fork = i;
 		data->philo[i].right_fork = (i + 1) % data->num_of_philo;
 		data->philo[i].data = data;
+		usleep(1000);
 		if (pthread_create(&th[i], NULL, &routine, &data->philo[i]) != 0)
 			ft_error("Error: Failed to create thread");
 		i++;
