@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 14:40:28 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/06 12:27:44 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/06 17:07:40 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,11 @@ static int	eat(t_philo *philo)
 	{
 		philo->data->c_time = get_time_in_ms() - philo->data->start_time;
 		pthread_mutex_lock(&philo->data->last_meal_mutex[philo->index - 1]);
+		pthread_mutex_lock(&philo->data->print_mutex);
 		printf("%lld %d has taken a fork\n", philo->data->c_time, philo->index);
 		printf("%lld %d has taken a fork\n", philo->data->c_time, philo->index);
 		printf("%lld %d is eating\n", philo->data->c_time, philo->index);
+		pthread_mutex_unlock(&philo->data->print_mutex);
 		philo->last_meal = philo->data->c_time;
 		ft_usleep(philo->data->time_to_eat);
 		pthread_mutex_unlock(&philo->data->last_meal_mutex[philo->index - 1]);
@@ -88,8 +90,10 @@ static void	*routine(void *arg)
 	{
 		if (!eat(philo))
 			return (NULL);
+		pthread_mutex_lock(&philo->data->print_mutex);
 		printf("%lld %d is thinking\n", philo->data->c_time, philo->index);
 		printf("%lld %d is sleeping\n", philo->data->c_time, philo->index);
+		pthread_mutex_unlock(&philo->data->print_mutex);
 		ft_usleep(philo->data->time_to_sleep);
 		i++;
 	}
@@ -110,6 +114,7 @@ void	init_threads(t_data *data)
 	if (!data->forks || !data->philo || !th)
 		ft_error("Error: Failed to allocate memory");
 	data->start_time = get_time_in_ms();
+	pthread_mutex_init(&data->print_mutex, NULL);
 	i = 0;
 	while (i < data->num_of_philo)
 	{

@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 11:43:15 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/06 12:25:17 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/06 17:08:24 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	destroy_mutex(t_data *data)
 		pthread_mutex_destroy(&data->last_meal_mutex[i]);
 		i++;
 	}
+	pthread_mutex_destroy(&data->print_mutex);
 }
 
 // Fucntion used to join the threads
