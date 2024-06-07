@@ -5,80 +5,68 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/07 13:57:45 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/07 20:12:17 by cstoia           ###   ########.fr       */
+/*   Created: 2024/05/31 14:40:28 by cstoia            #+#    #+#             */
+/*   Updated: 2024/06/07 23:59:09 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-// Eating routine for each philo
-static int	eat(t_philo *philo)
+// Check if a philosopher is dead
+void	*check_if_alive(void *arg)
 {
-	if (handel_one_philo(philo))
-		return (0);
-	int first_fork, second_fork;
-	if (philo->index % 2 == 0)
+	t_data	*data;
+	int		i;
+
+	data = (t_data *)arg;
+	while (1)
 	{
-		first_fork = philo->right_fork;
-		second_fork = philo->left_fork;
-		ft_usleep(100);
-	}
-	else
-	{
-		first_fork = philo->left_fork;
-		second_fork = philo->right_fork;
-	}
-	if (pthread_mutex_lock(&philo->data->forks[second_fork]) != 0)
-		return (0);
-	if (pthread_mutex_lock(&philo->data->forks[first_fork]) != 0)
-	{
-		pthread_mutex_unlock(&philo->data->forks[second_fork]);
-		return (0);
-	}
-	else if (!check_if_dead(philo) && philo->data->dead == 0)
-	{
-		pthread_mutex_lock(&philo->data->last_meal_mutex[philo->index - 1]);
-		philo->data->c_time = get_time_in_ms() - philo->data->start_time;
-		if (philo->data->dead == 0)
+		i = 0;
+		while (i < data->num_of_philo)
 		{
-			pthread_mutex_lock(&philo->data->print_mutex);
-			philo->data->c_time = get_time_in_ms() - philo->data->start_time;
-			printf("%lld %d has taken a fork\n", philo->data->c_time,
-				philo->index);
-			pthread_mutex_unlock(&philo->data->print_mutex);
+			if (check_if_dead(&data->philo[i]))
+				return (NULL);
+			i++;
 		}
-		if (philo->data->dead == 0)
-		{
-			pthread_mutex_lock(&philo->data->print_mutex);
-			philo->data->c_time = get_time_in_ms() - philo->data->start_time;
-			printf("%lld %d has taken a fork\n", philo->data->c_time,
-				philo->index);
-			pthread_mutex_unlock(&philo->data->print_mutex);
-		}
-		if (philo->data->dead == 0)
-		{
-			pthread_mutex_lock(&philo->data->print_mutex);
-			philo->data->c_time = get_time_in_ms() - philo->data->start_time;
-			printf("%lld %d is eating\n", philo->data->c_time, philo->index);
-			pthread_mutex_unlock(&philo->data->print_mutex);
-		}
-		pthread_mutex_unlock(&philo->data->print_mutex);
-		philo->last_meal = philo->data->c_time;
-		ft_usleep(philo->data->time_to_eat);
-		pthread_mutex_unlock(&philo->data->forks[first_fork]);
-		pthread_mutex_unlock(&philo->data->forks[second_fork]);
-		pthread_mutex_unlock(&philo->data->last_meal_mutex[philo->index - 1]);
 	}
-	else
-	{
-		pthread_mutex_unlock(&philo->data->forks[first_fork]);
-		pthread_mutex_unlock(&philo->data->forks[second_fork]);
-	}
-	return (1);
 }
 
-// Function called for each thread
+// Function that handle the case where there is only one philosopher
+int	handel_one_philo(t_philo *philo)
+{
+	if (philo->data->num_of_philo == 1)
+	{
+		printf("%lld %d is waiting for forks\n", philo->data->c_time,
+			philo->index);
+		usleep(philo->data->time_to_die);
+		return (1);
+	}
+	return (0);
+}
+
+// Function to check if a philosopher is dead
+int	check_if_dead(t_philo *philo)
+{
+	long long	current_time;
+
+	current_time = get_time_in_ms() - philo->data->start_time;
+	if (philo->data->dead == 0 && current_time
+		- philo->last_meal > philo->data->time_to_die)
+	{
+		pthread_mutex_lock(&philo->data->print_mutex);
+		if (philo->data->dead == 0)
+		{
+			philo->data->dead = 1;
+			printf("%lld %d died\n", current_time, philo->index);
+			return (1);
+		}
+		pthread_mutex_unlock(&philo->data->print_mutex);
+		return (1);
+	}
+	return (0);
+}
+
+// Routine for each philosopher
 void	*routine(void *arg)
 {
 	t_philo	*philo;
@@ -94,31 +82,9 @@ void	*routine(void *arg)
 		if (!eat(philo) || philo->data->dead == 1)
 			break ;
 		if (philo->data->dead == 0)
-		{
-			pthread_mutex_lock(&philo->data->print_mutex);
-			philo->data->c_time = get_time_in_ms() - philo->data->start_time;
-			if (philo->data->dead == 0)
-				printf("%lld %d is sleeping\n", philo->data->c_time,
-					philo->index);
-			pthread_mutex_unlock(&philo->data->print_mutex);
-			ft_usleep(philo->data->time_to_sleep);
-		}
-		if (philo->data->dead == 0)
-		{
-			pthread_mutex_lock(&philo->data->print_mutex);
-			philo->data->c_time = get_time_in_ms() - philo->data->start_time;
-			if (philo->data->dead == 0)
-				printf("%lld %d is thinking\n", philo->data->c_time,
-					philo->index);
-			pthread_mutex_unlock(&philo->data->print_mutex);
-		}
-		pthread_mutex_lock(&philo->data->dead_mutex);
+			sleep_and_think(philo);
 		if (philo->data->meal != -1 && i >= philo->data->meal)
-		{
-			pthread_mutex_unlock(&philo->data->dead_mutex);
 			break ;
-		}
-		pthread_mutex_unlock(&philo->data->dead_mutex);
 		i++;
 	}
 	return (NULL);

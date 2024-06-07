@@ -1,16 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_threads_utils.c                               :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 11:43:15 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/07 20:09:04 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/07 23:39:47 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	ft_error(char *str)
+{
+	printf("%s\n", str);
+	exit(EXIT_FAILURE);
+}
 
 // Gets the current time in milliseconds
 long long	get_time_in_ms(void)
@@ -21,39 +27,26 @@ long long	get_time_in_ms(void)
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
-// Function that handle the case where there is only one philosopher
-int	handel_one_philo(t_philo *philo)
+// More precise usleep function
+void	ft_usleep(useconds_t microseconds)
 {
-	if (philo->data->num_of_philo == 1)
-	{
-		printf("%lld %d is waiting for forks\n", philo->data->c_time,
-			philo->index);
-		usleep(philo->data->time_to_die);
-		printf("%lld %d died\n", philo->data->c_time, philo->index);
-		return (1);
-	}
-	return (0);
-}
+	struct timeval	end_time;
+	struct timeval	start;
 
-// Function to check if a philosopher is dead
-int	check_if_dead(t_philo *philo)
-{
-	long long	current_time;
-
-	current_time = get_time_in_ms() - philo->data->start_time;
-	if (philo->data->dead == 0 && current_time
-		- philo->last_meal > philo->data->time_to_die)
+	gettimeofday(&start, NULL);
+	end_time.tv_sec = start.tv_sec + microseconds / 1000000;
+	end_time.tv_usec = start.tv_usec + microseconds % 1000000;
+	if (end_time.tv_usec >= 1000000)
 	{
-		pthread_mutex_lock(&philo->data->print_mutex);
-		if (philo->data->dead == 0)
-		{
-			philo->data->dead = 1;
-			printf("%lld %d died\n", current_time, philo->index);
-		}
-		pthread_mutex_unlock(&philo->data->print_mutex);
-		return (1);
+		end_time.tv_sec += 1;
+		end_time.tv_usec -= 1000000;
 	}
-	return (0);
+	while ((start.tv_sec < end_time.tv_sec) || (start.tv_sec == end_time.tv_sec
+			&& start.tv_usec < end_time.tv_usec))
+	{
+		usleep(1000);
+		gettimeofday(&start, NULL);
+	}
 }
 
 // Function used to destroy each mutex

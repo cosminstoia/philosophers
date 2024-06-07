@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 11:41:03 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/07 20:08:41 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/07 23:59:08 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,10 @@ void					destroy_mutex(t_data *data);
 void					join_threads(t_data *data, pthread_t *th,
 							pthread_t still_alive);
 void					ft_usleep(useconds_t microseconds);
+int						eat(t_philo *philo);
+void					sleep_and_think(t_philo *philo);
 void					*routine(void *arg);
+void					*check_if_alive(void *arg);
 
 // Error function
 int						ft_error(char *str);

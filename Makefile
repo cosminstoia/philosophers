@@ -14,9 +14,9 @@ INCLUDES = ./philo.h
 # Source files
 CFILES = 	\
 			./main.c \
-			./init_threads.c \
 			./parse_input.c \
-			./init_threads_utils.c \
+			./utils.c \
+			./actions.c	\
 			./routine.c
 
 # Define objects
