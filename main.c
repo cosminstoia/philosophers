@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 11:22:24 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/06 12:24:30 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/07 13:54:30 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ int	main(int argc, char **argv)
 	if (argc == 5 || argc == 6)
 	{
 		parse_input(&data, argv);
-		init_threads(&data);
+		if (init_threads(&data))
+			return (0);
 	}
 	else
 		ft_error("Wrong number of arguments!");

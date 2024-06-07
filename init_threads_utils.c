@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 11:43:15 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/06 17:08:24 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/07 13:40:12 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,12 @@ int	handel_one_philo(t_philo *philo)
 // Fucntion to check if a philosopher is dead
 int	check_if_dead(t_philo *philo)
 {
-	if ((philo->data->c_time) - (philo->last_meal) > (philo->data->time_to_die))
+	if (philo->data->c_time - philo->last_meal > philo->data->time_to_die)
 	{
 		philo->data->dead = 1;
+		pthread_mutex_lock(&philo->data->print_mutex);
 		printf("%lld %d died\n", philo->data->c_time, philo->index);
+		pthread_mutex_unlock(&philo->data->print_mutex);
 		return (1);
 	}
 	return (0);

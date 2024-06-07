@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 11:41:03 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/06 17:06:30 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/07 13:47:29 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,19 +45,21 @@ typedef struct s_data
 	t_philo				*philo;
 	pthread_mutex_t		*forks;
 	pthread_mutex_t		*last_meal_mutex;
-	pthread_mutex_t     print_mutex;
+	pthread_mutex_t		print_mutex;
+	pthread_mutex_t		dead_mutex;
 }						t_data;
 
 // Parse input function
 void					parse_input(t_data *data, char **argv);
 
 // Threads fucntions
-void					init_threads(t_data *data);
+int						init_threads(t_data *data);
 long long				get_time_in_ms(void);
 int						handel_one_philo(t_philo *philo);
 int						check_if_dead(t_philo *philo);
 void					destroy_mutex(t_data *data);
 void					join_threads(t_data *data, pthread_t *th);
+void					ft_usleep(useconds_t microseconds);
 
 // Error function
 int						ft_error(char *str);
