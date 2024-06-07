@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 11:41:03 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/07 13:47:29 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/07 19:31:28 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,10 @@ long long				get_time_in_ms(void);
 int						handel_one_philo(t_philo *philo);
 int						check_if_dead(t_philo *philo);
 void					destroy_mutex(t_data *data);
-void					join_threads(t_data *data, pthread_t *th);
+void					join_threads(t_data *data, pthread_t *th,
+							pthread_t still_alive);
 void					ft_usleep(useconds_t microseconds);
+void					*routine(void *arg);
 
 // Error function
 int						ft_error(char *str);

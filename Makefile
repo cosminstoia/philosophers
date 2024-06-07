@@ -17,6 +17,7 @@ CFILES = 	\
 			./init_threads.c \
 			./parse_input.c \
 			./init_threads_utils.c \
+			./routine.c
 
 # Define objects
 OBJECTS = $(CFILES:%.c=$(OBJ_DIR)/%.o)

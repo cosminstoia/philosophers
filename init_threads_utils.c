@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 11:43:15 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/07 13:40:12 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/07 19:42:04 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,21 @@ int	handel_one_philo(t_philo *philo)
 	return (0);
 }
 
-// Fucntion to check if a philosopher is dead
+// Function to check if a philosopher is dead
 int	check_if_dead(t_philo *philo)
 {
-	if (philo->data->c_time - philo->last_meal > philo->data->time_to_die)
+	long long	current_time;
+
+	current_time = get_time_in_ms() - philo->data->start_time;
+	if (philo->data->dead == 0 && current_time
+		- philo->last_meal > philo->data->time_to_die)
 	{
-		philo->data->dead = 1;
 		pthread_mutex_lock(&philo->data->print_mutex);
-		printf("%lld %d died\n", philo->data->c_time, philo->index);
+		if (philo->data->dead == 0)
+		{
+			philo->data->dead = 1;
+			printf("%lld %d died\n", current_time, philo->index);
+		}
 		pthread_mutex_unlock(&philo->data->print_mutex);
 		return (1);
 	}
@@ -65,7 +72,7 @@ void	destroy_mutex(t_data *data)
 }
 
 // Fucntion used to join the threads
-void	join_threads(t_data *data, pthread_t *th)
+void	join_threads(t_data *data, pthread_t *th, pthread_t still_alive)
 {
 	int	i;
 
@@ -76,4 +83,6 @@ void	join_threads(t_data *data, pthread_t *th)
 			ft_error("Error: Failed to join thread");
 		i++;
 	}
+	if (pthread_join(still_alive, NULL) != 0)
+		ft_error("Error: Failed to join thread");
 }
