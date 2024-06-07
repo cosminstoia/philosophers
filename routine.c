@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:57:45 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/07 19:38:37 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/07 20:12:17 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ static int	eat(t_philo *philo)
 	{
 		first_fork = philo->right_fork;
 		second_fork = philo->left_fork;
+		ft_usleep(100);
 	}
 	else
 	{
@@ -96,7 +97,7 @@ void	*routine(void *arg)
 		{
 			pthread_mutex_lock(&philo->data->print_mutex);
 			philo->data->c_time = get_time_in_ms() - philo->data->start_time;
-			if (philo->data->dead == 0 && (i + 1) < philo->data->meal)
+			if (philo->data->dead == 0)
 				printf("%lld %d is sleeping\n", philo->data->c_time,
 					philo->index);
 			pthread_mutex_unlock(&philo->data->print_mutex);
@@ -106,7 +107,7 @@ void	*routine(void *arg)
 		{
 			pthread_mutex_lock(&philo->data->print_mutex);
 			philo->data->c_time = get_time_in_ms() - philo->data->start_time;
-			if (philo->data->dead == 0 && (i + 1) < philo->data->meal)
+			if (philo->data->dead == 0)
 				printf("%lld %d is thinking\n", philo->data->c_time,
 					philo->index);
 			pthread_mutex_unlock(&philo->data->print_mutex);

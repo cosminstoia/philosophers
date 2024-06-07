@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 14:40:28 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/07 19:32:00 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/07 20:09:00 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,7 @@ void	*check_if_alive(void *arg)
 	while (1)
 	{
 		if (check_if_dead(philo))
-		{
 			break ;
-		}
-		// usleep(10000);
 	}
 	return (NULL);
 }
