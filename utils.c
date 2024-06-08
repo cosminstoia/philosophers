@@ -6,16 +6,17 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 11:43:15 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/07 23:39:47 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/08 11:00:16 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+// Function to handle error massage
 int	ft_error(char *str)
 {
 	printf("%s\n", str);
-	exit(EXIT_FAILURE);
+	return (EXIT_FAILURE);
 }
 
 // Gets the current time in milliseconds
@@ -65,7 +66,7 @@ void	destroy_mutex(t_data *data)
 }
 
 // Fucntion used to join the threads
-void	join_threads(t_data *data, pthread_t *th, pthread_t still_alive)
+int	join_threads(t_data *data, pthread_t *th, pthread_t still_alive)
 {
 	int	i;
 
@@ -73,9 +74,16 @@ void	join_threads(t_data *data, pthread_t *th, pthread_t still_alive)
 	while (i < data->num_of_philo)
 	{
 		if (pthread_join(th[i], NULL) != 0)
+		{
 			ft_error("Error: Failed to join thread");
+			return (EXIT_FAILURE);
+		}
 		i++;
 	}
 	if (pthread_join(still_alive, NULL) != 0)
+	{
 		ft_error("Error: Failed to join thread");
+		return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
 }

@@ -6,20 +6,22 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 14:40:28 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/07 23:59:09 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/08 12:04:16 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-// Check if a philosopher is dead
+// Check if all philosophers are alive
 void	*check_if_alive(void *arg)
 {
 	t_data	*data;
 	int		i;
+	int		j;
 
 	data = (t_data *)arg;
-	while (1)
+	j = 0;
+	while (data->meal == -1 || j < data->meal)
 	{
 		i = 0;
 		while (i < data->num_of_philo)
@@ -28,7 +30,9 @@ void	*check_if_alive(void *arg)
 				return (NULL);
 			i++;
 		}
+		j++;
 	}
+	return (NULL);
 }
 
 // Function that handle the case where there is only one philosopher
@@ -81,11 +85,12 @@ void	*routine(void *arg)
 			break ;
 		if (!eat(philo) || philo->data->dead == 1)
 			break ;
-		if (philo->data->dead == 0)
+		i++;
+		if (philo->data->dead == 0 && (philo->data->meal == -1
+				|| i < philo->data->meal))
 			sleep_and_think(philo);
 		if (philo->data->meal != -1 && i >= philo->data->meal)
 			break ;
-		i++;
 	}
 	return (NULL);
 }

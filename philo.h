@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 11:41:03 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/07 23:59:08 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/08 12:07:39 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ typedef struct s_philo
 	t_data				*data;
 }						t_philo;
 
-// Store the data from the input
+// Store the data
 typedef struct s_data
 {
 	int					num_of_philo;
@@ -50,21 +50,25 @@ typedef struct s_data
 }						t_data;
 
 // Parse input function
-void					parse_input(t_data *data, char **argv);
+int						parse_input(t_data *data, char **argv);
 
-// Threads fucntions
+// Threads and mutexes fucntions
 int						init_threads(t_data *data);
-long long				get_time_in_ms(void);
-int						handel_one_philo(t_philo *philo);
-int						check_if_dead(t_philo *philo);
-void					destroy_mutex(t_data *data);
-void					join_threads(t_data *data, pthread_t *th,
+int						join_threads(t_data *data, pthread_t *th,
 							pthread_t still_alive);
-void					ft_usleep(useconds_t microseconds);
+void					destroy_mutex(t_data *data);
+
+// Thread`s routine functions
+void					*routine(void *arg);
+int						handel_one_philo(t_philo *philo);
 int						eat(t_philo *philo);
 void					sleep_and_think(t_philo *philo);
-void					*routine(void *arg);
+int						check_if_dead(t_philo *philo);
 void					*check_if_alive(void *arg);
+
+// Utility functions
+long long				get_time_in_ms(void);
+void					ft_usleep(useconds_t microseconds);
 
 // Error function
 int						ft_error(char *str);
