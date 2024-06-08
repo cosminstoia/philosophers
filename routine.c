@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 14:40:28 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/08 12:04:16 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/08 12:48:11 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ int	handel_one_philo(t_philo *philo)
 		printf("%lld %d is waiting for forks\n", philo->data->c_time,
 			philo->index);
 		usleep(philo->data->time_to_die);
-		return (1);
+		return (EXIT_FAILURE);
 	}
-	return (0);
+	return (EXIT_SUCCESS);
 }
 
 // Function to check if a philosopher is dead
@@ -57,17 +57,16 @@ int	check_if_dead(t_philo *philo)
 	if (philo->data->dead == 0 && current_time
 		- philo->last_meal > philo->data->time_to_die)
 	{
-		pthread_mutex_lock(&philo->data->print_mutex);
 		if (philo->data->dead == 0)
 		{
+			pthread_mutex_lock(&philo->data->print_mutex);
 			philo->data->dead = 1;
 			printf("%lld %d died\n", current_time, philo->index);
-			return (1);
+			pthread_mutex_unlock(&philo->data->print_mutex);
+			return (EXIT_FAILURE);
 		}
-		pthread_mutex_unlock(&philo->data->print_mutex);
-		return (1);
 	}
-	return (0);
+	return (EXIT_SUCCESS);
 }
 
 // Routine for each philosopher

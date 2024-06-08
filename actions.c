@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:57:45 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/08 11:47:20 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/08 12:44:58 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	grab_forks(t_philo *philo, int first_fork, int second_fork)
 {
-	ft_usleep(100);
+	usleep(100);
 	if (pthread_mutex_lock(&philo->data->forks[second_fork]) != 0)
 		return (0);
 	if (pthread_mutex_lock(&philo->data->forks[first_fork]) != 0)
