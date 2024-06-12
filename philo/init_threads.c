@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 10:42:50 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/12 13:35:50 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/12 17:44:26 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ static int	initialize_philos_threads(t_data *data, pthread_t *th)
 		}
 		i++;
 	}
+	data->start_time = get_time_in_ms();
 	pthread_mutex_unlock(&data->start_mutex);
 	return (EXIT_SUCCESS);
 }
@@ -100,7 +101,6 @@ int	init_threads(t_data *data)
 
 	if (alloc_and_init_mutex(data, &th) != EXIT_SUCCESS)
 		return (EXIT_FAILURE);
-	data->start_time = get_time_in_ms();
 	if (data->meal != 0)
 	{
 		if (initialize_philos_threads(data, th) != EXIT_SUCCESS)

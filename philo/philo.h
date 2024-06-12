@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 11:41:03 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/12 13:26:49 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/12 18:52:05 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,8 @@ int						count_meals(t_data *data);
 void					*check_if_alive(void *arg);
 
 // Utility functions
-long long				get_time_in_ms(void);
-void					ft_usleep(useconds_t microseconds);
+u_int64_t				get_time_in_ms(void);
+int						ft_usleep(unsigned int time_in_microseconds);
 
 // Free memory
 void					free_memory(t_data *data, pthread_t *th);

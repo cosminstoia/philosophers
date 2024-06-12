@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 11:43:15 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/12 11:22:23 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/12 19:12:00 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,34 +20,24 @@ int	ft_error(char *str)
 }
 
 // Gets the current time in milliseconds
-long long	get_time_in_ms(void)
+u_int64_t	get_time_in_ms(void)
 {
-	struct timeval	time;
+	struct timeval	tv;
 
-	gettimeofday(&time, NULL);
-	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+	if (gettimeofday(&tv, NULL))
+		return (0);
+	return ((tv.tv_sec * (u_int64_t)(1000)) + (tv.tv_usec / 1000));
 }
 
 // More precise usleep function
-void	ft_usleep(useconds_t microseconds)
+int	ft_usleep(unsigned int time_in_microseconds)
 {
-	struct timeval	end_time;
-	struct timeval	start;
+	long long	start;
 
-	gettimeofday(&start, NULL);
-	end_time.tv_sec = start.tv_sec + microseconds / 1000000;
-	end_time.tv_usec = start.tv_usec + microseconds % 1000000;
-	if (end_time.tv_usec >= 1000000)
-	{
-		end_time.tv_sec += 1;
-		end_time.tv_usec -= 1000000;
-	}
-	while ((start.tv_sec < end_time.tv_sec) || (start.tv_sec == end_time.tv_sec
-			&& start.tv_usec < end_time.tv_usec))
-	{
+	start = get_time_in_ms();
+	while (get_time_in_ms() - start < time_in_microseconds)
 		usleep(100);
-		gettimeofday(&start, NULL);
-	}
+	return (0);
 }
 
 // Function used to destroy each mutex

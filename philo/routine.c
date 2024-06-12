@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 14:40:28 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/12 13:47:39 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/12 18:46:23 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	count_meals(t_data *data)
 	i = 0;
 	while (i < data->num_of_philo)
 	{
-		if (data->philo[i].meal_count <= data->meal)
+		if (data->philo[i].meal_count < data->meal)
 			all_ate_required_meals = 0;
 		i++;
 	}
@@ -95,13 +95,12 @@ void	*check_if_alive(void *arg)
 
 static int	routine_2(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->data->c_time_mutex);
-	philo->data->c_time = get_time_in_ms() - philo->data->start_time;
-	pthread_mutex_unlock(&philo->data->c_time_mutex);
 	if (philo_eat(philo))
 		return (EXIT_FAILURE);
 	philo_sleep(philo);
 	philo_think(philo);
+	if (philo->meal_count == philo->data->meal)
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
@@ -114,11 +113,9 @@ void	*routine(void *arg)
 	philo = (t_philo *)arg;
 	pthread_mutex_lock(&philo->data->start_mutex);
 	pthread_mutex_unlock(&philo->data->start_mutex);
-	if (philo->index % 2 != 0)
-	{
-		philo_think(philo);
+	philo_think(philo);
+	if (philo->index % 2 == 0)
 		ft_usleep(philo->data->time_to_eat / 2);
-	}
 	while (1)
 	{
 		pthread_mutex_lock(&philo->data->check_dead_mutex);

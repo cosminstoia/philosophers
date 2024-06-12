@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 16:09:21 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/11 21:19:29 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/12 18:53:15 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,8 @@ int	parse_input(t_data *data, char **argv)
 	}
 	data->num_of_philo = ft_atoi(argv[1]);
 	data->time_to_die = ft_atoi(argv[2]);
-	data->time_to_eat = ft_atoi(argv[3]) * 1000;
-	data->time_to_sleep = ft_atoi(argv[4]) * 1000;
+	data->time_to_eat = ft_atoi(argv[3]);
+	data->time_to_sleep = ft_atoi(argv[4]);
 	if (argv[5])
 		data->meal = ft_atoi(argv[5]);
 	else

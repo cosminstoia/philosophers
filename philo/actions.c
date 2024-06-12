@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:57:45 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/12 13:32:46 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/12 19:10:28 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,17 @@
 
 static void	print_and_update_status(t_philo *philo, const char *status)
 {
-	int	dead_flag;
-
 	pthread_mutex_lock(&philo->data->check_dead_mutex);
-	dead_flag = philo->data->dead;
-	pthread_mutex_unlock(&philo->data->check_dead_mutex);
-	pthread_mutex_lock(&philo->data->c_time_mutex);
-	philo->data->c_time = get_time_in_ms() - philo->data->start_time;
-	pthread_mutex_unlock(&philo->data->c_time_mutex);
-	pthread_mutex_lock(&philo->data->print_mutex);
-	if (dead_flag == 0)
+	if (philo->data->dead == 0)
 	{
+		pthread_mutex_lock(&philo->data->print_mutex);
 		pthread_mutex_lock(&philo->data->c_time_mutex);
+		philo->data->c_time = get_time_in_ms() - philo->data->start_time;
 		printf("%lld %d %s\n", philo->data->c_time, philo->index, status);
 		pthread_mutex_unlock(&philo->data->c_time_mutex);
+		pthread_mutex_unlock(&philo->data->print_mutex);
 	}
-	pthread_mutex_unlock(&philo->data->print_mutex);
+	pthread_mutex_unlock(&philo->data->check_dead_mutex);
 }
 
 static int	grab_forks(t_philo *philo, int first_fork, int second_fork)
@@ -86,37 +81,31 @@ int	philo_eat(t_philo *philo)
 
 void	philo_sleep(t_philo *philo)
 {
-	int	dead_flag;
-
 	pthread_mutex_lock(&philo->data->check_dead_mutex);
-	dead_flag = philo->data->dead;
-	pthread_mutex_unlock(&philo->data->check_dead_mutex);
-	pthread_mutex_lock(&philo->data->print_mutex);
-	if (dead_flag == 0)
+	if (philo->data->dead == 0)
 	{
+		pthread_mutex_lock(&philo->data->print_mutex);
 		pthread_mutex_lock(&philo->data->c_time_mutex);
-		philo->data->c_time = get_time_in_ms() - philo->data->start_time;
-		printf("%lld %d is sleeping\n", philo->data->c_time, philo->index);
+		printf("%lld %d is sleeping\n", get_time_in_ms()
+			- philo->data->start_time, philo->index);
 		pthread_mutex_unlock(&philo->data->c_time_mutex);
+		pthread_mutex_unlock(&philo->data->print_mutex);
 	}
-	pthread_mutex_unlock(&philo->data->print_mutex);
+	pthread_mutex_unlock(&philo->data->check_dead_mutex);
 	ft_usleep(philo->data->time_to_sleep);
 }
 
 void	philo_think(t_philo *philo)
 {
-	int	dead_flag;
-
 	pthread_mutex_lock(&philo->data->check_dead_mutex);
-	dead_flag = philo->data->dead;
-	pthread_mutex_unlock(&philo->data->check_dead_mutex);
-	pthread_mutex_lock(&philo->data->print_mutex);
-	if (dead_flag == 0)
+	if (philo->data->dead == 0)
 	{
+		pthread_mutex_lock(&philo->data->print_mutex);
 		pthread_mutex_lock(&philo->data->c_time_mutex);
 		philo->data->c_time = get_time_in_ms() - philo->data->start_time;
 		printf("%lld %d is thinking\n", philo->data->c_time, philo->index);
 		pthread_mutex_unlock(&philo->data->c_time_mutex);
+		pthread_mutex_unlock(&philo->data->print_mutex);
 	}
-	pthread_mutex_unlock(&philo->data->print_mutex);
+	pthread_mutex_unlock(&philo->data->check_dead_mutex);
 }
