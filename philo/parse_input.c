@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 16:09:21 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/08 11:01:11 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/11 21:19:29 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,8 @@ int	parse_input(t_data *data, char **argv)
 	while (argv[i])
 	{
 		num = ft_atoi(argv[i]);
-		if (num < 0 || num > 2147483647 || (!ft_isdigit(argv[i])))
+		if (num < 0 || num > 2147483647 || (!ft_isdigit(argv[i]))
+			|| ft_atoi(argv[1]) == 0)
 		{
 			ft_error("Error: Invalid input");
 			return (EXIT_FAILURE);

@@ -7,6 +7,9 @@ CC = cc
 # Compiling flags
 CFLAGS = -Wall -Wextra -Werror
 
+# Linking flags
+LDFLAGS = -lpthread
+
 # Directories
 OBJ_DIR = objects
 INCLUDES = ./philo.h
@@ -28,7 +31,7 @@ all: $(NAME)
 
 # Build the project
 $(NAME): $(OBJECTS)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS) $(LDFLAGS)
 
 # Create directory for objects, and compile source files into object files
 $(OBJ_DIR)/%.o: %.c $(INCLUDES)

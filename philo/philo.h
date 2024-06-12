@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 11:41:03 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/08 12:07:39 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/12 13:26:49 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct s_philo
 	int					left_fork;
 	int					right_fork;
 	long long			last_meal;
+	int					meal_count;
 	t_data				*data;
 }						t_philo;
 
@@ -46,7 +47,10 @@ typedef struct s_data
 	pthread_mutex_t		*forks;
 	pthread_mutex_t		*last_meal_mutex;
 	pthread_mutex_t		print_mutex;
-	pthread_mutex_t		dead_mutex;
+	pthread_mutex_t		start_mutex;
+	pthread_mutex_t		meal_mutex;
+	pthread_mutex_t		check_dead_mutex;
+	pthread_mutex_t		c_time_mutex;
 }						t_data;
 
 // Parse input function
@@ -60,15 +64,19 @@ void					destroy_mutex(t_data *data);
 
 // Thread`s routine functions
 void					*routine(void *arg);
-int						handel_one_philo(t_philo *philo);
-int						eat(t_philo *philo);
-void					sleep_and_think(t_philo *philo);
+int						philo_eat(t_philo *philo);
+void					philo_think(t_philo *philo);
+void					philo_sleep(t_philo *philo);
 int						check_if_dead(t_philo *philo);
+int						count_meals(t_data *data);
 void					*check_if_alive(void *arg);
 
 // Utility functions
 long long				get_time_in_ms(void);
 void					ft_usleep(useconds_t microseconds);
+
+// Free memory
+void					free_memory(t_data *data, pthread_t *th);
 
 // Error function
 int						ft_error(char *str);

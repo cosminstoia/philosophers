@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 11:43:15 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/08 11:00:16 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/12 11:22:23 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	ft_usleep(useconds_t microseconds)
 	while ((start.tv_sec < end_time.tv_sec) || (start.tv_sec == end_time.tv_sec
 			&& start.tv_usec < end_time.tv_usec))
 	{
-		usleep(1000);
+		usleep(100);
 		gettimeofday(&start, NULL);
 	}
 }
@@ -63,6 +63,10 @@ void	destroy_mutex(t_data *data)
 		i++;
 	}
 	pthread_mutex_destroy(&data->print_mutex);
+	pthread_mutex_destroy(&data->check_dead_mutex);
+	pthread_mutex_destroy(&data->start_mutex);
+	pthread_mutex_destroy(&data->meal_mutex);
+	pthread_mutex_destroy(&data->c_time_mutex);
 }
 
 // Fucntion used to join the threads
