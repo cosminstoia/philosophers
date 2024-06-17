@@ -6,7 +6,7 @@
 /*   By: cstoia <cstoia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 11:43:15 by cstoia            #+#    #+#             */
-/*   Updated: 2024/06/12 19:12:00 by cstoia           ###   ########.fr       */
+/*   Updated: 2024/06/17 15:53:42 by cstoia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	ft_usleep(unsigned int time_in_microseconds)
 
 	start = get_time_in_ms();
 	while (get_time_in_ms() - start < time_in_microseconds)
-		usleep(100);
+		usleep(200);
 	return (0);
 }
 
